@@ -209,16 +209,16 @@ func (bf *blockFeed) forEachBlock() error {
 			"blockToAnalyzeHex": block.Number,
 		})
 
-		//if tooOld, age := blockIsTooOld(block, bf.maxBlockAge); tooOld {
-		//	logger.WithField("age", age).Warnf("block is older than %v - setting current block num to latest", bf.maxBlockAge)
-		//	latestBlockNum, err := bf.client.BlockNumber(bf.ctx)
-		//	if err != nil {
-		//		logger.WithError(err).Error("failed to get latest block number")
-		//		continue
-		//	}
-		//	currentBlockNum = latestBlockNum
-		//	continue
-		//}
+		if tooOld, age := blockIsTooOld(block, bf.maxBlockAge); tooOld {
+			logger.WithField("age", age).Warnf("block is older than %v - setting current block num to latest", bf.maxBlockAge)
+			latestBlockNum, err := bf.client.BlockNumber(bf.ctx)
+			if err != nil {
+				logger.WithError(err).Error("failed to get latest block number")
+				continue
+			}
+			currentBlockNum = latestBlockNum
+			continue
+		}
 
 		bf.lastBlock.Set(blockNumToAnalyze.String())
 
